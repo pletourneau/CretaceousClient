@@ -1,5 +1,7 @@
+@model Tuple<List<Animal>, PaginationModel>
+
 @{
-  ViewData["Title"] = "Animals";
+    ViewData["Title"] = "Animals";
 }
 
 <h1>All Cretaceous Animals:</h1>
@@ -9,8 +11,22 @@
 <p>@Html.ActionLink("Add a new animal to the park", "Create")</p>
 
 <ol>
-@foreach (Animal animal in Model)
-{
-  <li><strong>@animal.Name</strong> the @animal.Species | <a href="/Animals/Details/@(animal.AnimalId)">View Details</a></li>
-}
+    @foreach (var animal in Model.Item1)
+    {
+        <li>
+            <strong>@animal.Name</strong> the @animal.Species |
+            <a href="/Animals/Details/@animal.AnimalId">View Details</a>
+        </li>
+    }
 </ol>
+
+@if (Model.Item2.HasPreviousPage)
+{
+
+    <a href="/Animals/Index?pageIndex=@(Model.Item2.PageIndex - 1)">Previous</a>
+}
+
+@if (Model.Item2.HasNextPage)
+{
+    <a href="/Animals/Index?pageIndex=@(Model.Item2.PageIndex + 1)">Next</a>
+}

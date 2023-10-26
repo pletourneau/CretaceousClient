@@ -13,16 +13,42 @@ namespace CretaceousClient.Models
     public int Age { get; set; }
 
     // We need two very similar "Get" methods because they return two different types of data, one a list, and one a string.
-    public static List<Animal> GetAnimals()
+    // public static List<Animal> GetAnimals()
+    // {
+    //   var apiCallTask = ApiHelper.GetAll(); // uses "GetAll" ApiHelper method
+    //   var result = apiCallTask.Result;
+
+    //   JArray jsonResponse = JsonConvert.DeserializeObject<JArray>(result); // Results in a JSON array
+    //   List<Animal> animalList = JsonConvert.DeserializeObject<List<Animal>>(jsonResponse.ToString());
+
+    //   return animalList;
+    // }
+
+    public static List<Animal> GetAnimals(int pageIndex, int pageSize)
     {
-      var apiCallTask = ApiHelper.GetAll(); // uses "GetAll" ApiHelper method
+      // Modify your API request to include the 'pageIndex' parameter
+      var apiCallTask = ApiHelper.GetAll(pageIndex, pageSize);
+
       var result = apiCallTask.Result;
 
-      JArray jsonResponse = JsonConvert.DeserializeObject<JArray>(result); // Results in a JSON array
-      List<Animal> animalList = JsonConvert.DeserializeObject<List<Animal>>(jsonResponse.ToString());
+      // Deserialize the JSON response as a JObject
+      JObject jsonResponse = JsonConvert.DeserializeObject<JObject>(result);
 
-      return animalList;
+      if (jsonResponse != null && jsonResponse["data"] != null && jsonResponse["data"].Type == JTokenType.Array)
+      {
+        JArray animalsArray = jsonResponse["data"].ToObject<JArray>();
+        List<Animal> animalList = animalsArray.ToObject < List<Animal>>();
+
+        return animalList;
+      }
+      else
+      {
+        return new List<Animal>();
+      }
     }
+
+
+
 
     public static Animal GetDetails(int id) // requires id parameter to get a specific animal
     {
@@ -47,10 +73,11 @@ namespace CretaceousClient.Models
       ApiHelper.Put(animal.AnimalId, jsonAnimal);
     }
 
-    public static void Delete(int id) 
+    public static void Delete(int id)
     {
       ApiHelper.Delete(id);
     }
+    
   }
 }
 

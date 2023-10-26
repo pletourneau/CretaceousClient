@@ -5,10 +5,17 @@ namespace CretaceousClient.Models
 {
   public class ApiHelper
   {
-    public static async Task<string> GetAll()
+    // public static async Task<string> GetAll()
+    // {
+    //   RestClient client = new RestClient("http://localhost:5000/");
+    //   RestRequest request = new RestRequest($"api/animals", Method.Get);
+    //   RestResponse response = await client.GetAsync(request);
+    //   return response.Content;
+    // }
+    public static async Task<string> GetAll(int pageIndex, int pageSize)
     {
       RestClient client = new RestClient("http://localhost:5000/");
-      RestRequest request = new RestRequest($"api/animals", Method.Get);
+      RestRequest request = new RestRequest($"api/animals?pageIndex={pageIndex}&pageSize={pageSize}", Method.Get);
       RestResponse response = await client.GetAsync(request);
       return response.Content;
     }
@@ -21,7 +28,7 @@ namespace CretaceousClient.Models
       return response.Content;
     }
 
-    public static async void Post(string newAnimal)
+    public static async Task Post(string newAnimal)
     {
       RestClient client = new RestClient("http://localhost:5000/");
       RestRequest request = new RestRequest($"api/animals", Method.Post);
@@ -30,7 +37,7 @@ namespace CretaceousClient.Models
       await client.PostAsync(request);
     }
 
-    public static async void Put(int id, string animalToEdit) // Changed "string newAnimal" to more appropriate name.
+    public static async Task Put(int id, string animalToEdit) // Changed "string newAnimal" to more appropriate name.
     {
       RestClient client = new RestClient("http://localhost:5000/");
       RestRequest request = new RestRequest($"api/animals/{id}", Method.Put);
@@ -39,7 +46,7 @@ namespace CretaceousClient.Models
       await client.PutAsync(request);
     }
 
-    public static async void Delete(int id)
+    public static async Task Delete(int id)
     {
       RestClient client = new RestClient("http://localhost:5000/");
       RestRequest request = new RestRequest($"api/animals/{id}", Method.Delete);
